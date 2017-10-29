@@ -21,3 +21,4 @@ The submited results are written in a [google sheet](https://docs.google.com/spr
 7. Because this app has not verified by Google, there is a waring page for permission. (Click advence > Proceed to XXXXXX )
 ![app](https://github.com/Yuan-Yu/DrinkGroupBuyApp/blob/master/image/8.PNG?raw=true)
 8. Now the web app is deployed. Copy the Url link and visit the page.
+![web](https://github.com/Yuan-Yu/DrinkGroupBuyApp/blob/master/image/9.PNG?raw=true)
