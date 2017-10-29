@@ -1,0 +1,205 @@
+<script>
+Vue.prototype.$http = axios;
+var bus = new Vue();
+Vue.component('drinklist',{
+  template: '#type-container',
+  props: ['subdata'],
+  computed: {
+    drinks: function(){
+      return this.subdata.drinks;
+    }
+  }
+})
+
+Vue.component('drink-container',{
+  template: '#drink-container',
+  props: ['drink'],
+  computed: {
+
+  },
+  methods:{
+    select: function(){
+      bus.$emit('select',this.drink);
+    }
+  }
+})
+
+Vue.component('seletedconponent',{
+  template: '#seleted',
+  data: function(){
+    var data = { 'seletedDrink' : [] ,
+                  'size':'',
+                  'sugar':0,
+                  'ice':-1,
+                  'sugarlist': ['無糖','微糖','半糖','七分','全糖'],
+                'sugarlist_en': ['no suger','less than half','half','less','normal'],
+                  'iceLevels': ['hot','warm','room','ice-free','little-ice','half-ice','regular-ice'],
+                'iceLevels_cht': ['熱','溫','常溫','去冰','微冰','少冰','正常冰'],
+                  'name':'',
+                  'status': 'Submit',
+                  'isDrinkWarning': false,
+                  'isSizeWarnning': false,
+                  'isIceWarnning': false,
+                  'isOwnerWarning': false}
+    return data;
+  },watch:{
+    seletedDrink: function(){
+      if(this.seletedDrink.length != 0) this.isDrinkWarning=false;
+    },
+    ice: function(){
+      if(this.ice != -1 ) this.isIceWarnning=false;
+    },
+    name: function(){
+      if(this.name != '' ) this.isOwnerWarning=false;
+    },
+    size: function(){
+      if(this.size != '' ) this.isSizeWarnning=false;
+    },
+  },
+  computed: {
+  },created: function(){
+    bus.$on('select',function(drink){
+        this.resetSeleted();
+        this.seletedDrink = drink;
+    }.bind(this));
+  },methods: {
+    submit: function(){
+      var price = this.seletedDrink['price-'+this.size];
+      if(this.checkSeleted()){
+        var currentVue = this;
+        this.status = 'Ordering..';
+        postData = {name:this.name,
+                    drink:this.seletedDrink['name-cht'],
+                    size: this.size,
+                    sugar: this.sugarlist[this.sugar],
+                    ice: this.iceLevels_cht[this.ice],
+                    price: price};
+        onSuccess = ()=>{
+            currentVue.status = 'done';
+            setTimeout(function(){this.status = 'Submit'}.bind(currentVue),600);
+            currentVue.seletedDrink = [];
+            currentVue.resetSeleted();
+         }
+         google.script.run.withSuccessHandler(onSuccess).doPost(postData);
+
+      }
+      
+    },
+    checkSeleted: function(){
+      var ispass = true;
+      if(this.seletedDrink.length == 0){
+        this.isDrinkWarning = true;
+        ispass = false;
+      }
+      if(this.ice == -1 ){
+        this.isIceWarnning = true;
+        ispass = false;
+      }
+      if(this.name == '' ){
+        this.isOwnerWarning = true;
+        ispass = false;
+      }
+      if(this.size == ''){
+        this.isSizeWarnning = true;
+        ispass = false;
+      }
+
+      return ispass;
+    },
+    resetSeleted: function(){
+      this.seletedDrink = [];
+      this.size ='';
+      this.ice = -1;
+      this.sugar = 0;
+      this.name = '';
+      this.isDrinkWarning = false;
+      this.isSizeWarnning = false;
+      this.isIceWarnning = false;
+      this.isOwnerWarning = false;
+    }
+  }
+})
+var monitor = new Vue({
+  el: '#app',
+  data: {
+    drinksData: []
+  },mounted: function(){
+    var vobj = this; 
+    vobj.drinksData = [           {'type-cht':'愛茶的牛',
+              'type-en':'Tea',
+              'drinks': [
+                {'name-cht':'茉香綠茶','name-en':'Green Tea','price-M':'','price-L':30,'without-sugar':0},
+                {'name-cht':'大正紅茶','name-en':'black Tea','price-M':'','price-L':30,'without-sugar':0},
+                {'name-cht':'英倫伯爵紅茶','name-en':'Earl Grey Tea','price-M':'','price-L':35,'without-sugar':0},
+                {'name-cht':'初露青茶','name-en':'Light-Roasted Oolong Tea','price-M':'','price-L':30,'without-sugar':0},
+                {'name-cht':'高峰烏龍綠','name-en':'Oolong Tea','price-M':'','price-L':30,'without-sugar':0},
+                {'name-cht':'決明大麥','name-en':'Barley Water','price-M':'','price-L':25,'without-sugar':0},
+                {'name-cht':'青採翠玉 (冷)','name-en':'Iced Zhu Shan Tea','price-M':'','price-L':40,'without-sugar':0}
+              ]
+            },
+            {'type-cht':'牧場鮮奶茶',
+              'type-en':'Milk Tea',
+              'drinks': [
+                {'name-cht':'紅茶拿鐵','name-en':'Earl Grey Tea','price-M':45,'price-L':55,'without-sugar':0},
+                {'name-cht':'大正紅茶拿鐵','name-en':'Milk Tea','price-M':45,'price-L':55,'without-sugar':0},
+                {'name-cht':'珍珠紅茶拿鐵','name-en':'Bubble Milk Tea','price-M':50,'price-L':60,'without-sugar':0},
+                {'name-cht':'布丁紅茶拿鐵','name-en':'Pudding Milk Tea','price-M':50,'price-L':60,'without-sugar':0},
+                {'name-cht':'仙草紅茶拿鐵','name-en':'Herb jelly Milk Tea','price-M':50,'price-L':60,'without-sugar':0},
+                {'name-cht':'紅豆紅茶拿鐵','name-en':'Red Beans Milk Tea','price-M':50,'price-L':60,'without-sugar':0}
+              ]
+            },
+            {'type-cht':'綠光牧場鮮奶',
+              'type-en':'Green Light Milk',
+              'drinks': [
+                {'name-cht':'珍珠鮮奶','name-en':'Bubble Milk','price-M':60,'price-L':'','without-sugar':0},
+                {'name-cht':'手抄黑糖鮮奶','name-en':'Brown Sugar Milk','price-M':55,'price-L':'','without-sugar':0},
+                {'name-cht':'大甲芋頭鮮奶','name-en':'Taro Milk','price-M':60,'price-L':'','without-sugar':0},
+                {'name-cht':'草莓鮮奶 (冰)','name-en':'Strawberry Milk','price-M':60,'price-L':'','without-sugar':0},
+                {'name-cht':'可可亞鮮奶','name-en':'Cocoa Milk','price-M':55,'price-L':'','without-sugar':0},
+                {'name-cht':'抹茶鮮奶','name-en':'Matcha Milk','price-M':60,'price-L':'','without-sugar':0},
+                {'name-cht':'冬瓜鮮奶','name-en':'White Gourd Milk','price-M':55,'price-L':'','without-sugar':0},
+                {'name-cht':'布丁鮮奶','name-en':'Pudding Milk','price-M':55,'price-L':'','without-sugar':0},
+                {'name-cht':'仙草凍鮮奶','name-en':'Herb jelly Milk','price-M':55,'price-L':'','without-sugar':0},
+                {'name-cht':'紅豆鮮奶','name-en':'Red Beans Milk','price-M':60,'price-L':'','without-sugar':0}
+              ]
+            },
+            {'type-cht':'六時韻/無糖',
+              'type-en':'Cold BrewedTea /without sugar',
+              'drinks': [
+                {'name-cht':'鹿谷黃金烏龍 (冰)','name-en':'lced Lugu Oolong','price-M':60,'price-L':'','without-sugar':1},
+                {'name-cht':'小山迎露 (冰)','name-en':'Lced Jin Shuan Tea','price-M':65,'price-L':'','without-sugar':1}
+              ]
+            },
+            {'type-cht':'台灣鮮豆奶',
+              'type-en':'Soy Milk',
+              'drinks': [
+                {'name-cht':'大正紅茶鮮豆奶','name-en':'Black Tea & Soy Milk','price-M':45,'price-L':55,'without-sugar':0},
+                {'name-cht':'珍珠紅茶鮮豆奶','name-en':'Soy Milk Black Tea w/ Bubble','price-M':50,'price-L':60,'without-sugar':0},
+                {'name-cht':'抹茶鮮豆奶','name-en':'Matcha Soy Milk','price-M':50,'price-L':'','without-sugar':0},
+                {'name-cht':'冬瓜鮮豆奶','name-en':'White Gourd Soy Milk','price-M':50,'price-L':'','without-sugar':0},
+                {'name-cht':'布丁鮮豆奶','name-en':'Pudding Soy Milk','price-M':50,'price-L':'','without-sugar':0}
+              ]
+            },
+            {'type-cht':'手作特調',
+              'type-en':'Specials',
+              'drinks': [
+                {'name-cht':'原鄉冬瓜茶','name-en':'White Gourd Tea','price-M':'','price-L':30,'without-sugar':0},
+                {'name-cht':'冬瓜青茶','name-en':'White Gourd & light-Roasted Oolong Tea','price-M':'','price-L':40,'without-sugar':0},
+                {'name-cht':'百香綠茶','name-en':'Passion Gruit Juice & Green Tea','price-M':'','price-L':50,'without-sugar':0},
+                {'name-cht':'養樂多綠','name-en':'Yakult& Green Tea','price-M':'','price-L':50,'without-sugar':0},
+                {'name-cht':'甘蔗青茶','name-en':'Sugarcane Juice &  light-Roasted Oolong Tea','price-M':'','price-L':55,'without-sugar':0},
+                {'name-cht':'蔓莓雙果醋','name-en':'Cranberry & Strawberry Vinegar','price-M':'','price-L':55,'without-sugar':0},
+                {'name-cht':'香柚綠茶','name-en':'Grapefruit Juice & Green Tea','price-M':'','price-L':50,'without-sugar':0},
+                {'name-cht':'青檸香茶','name-en':'Lemon Flavored Green Tea','price-M':'','price-L':45,'without-sugar':0},
+                {'name-cht':'檸檬綠茶','name-en':'Green Tea & Lemon Juice','price-M':'','price-L':50,'without-sugar':0},
+                {'name-cht':'冬瓜檸檬','name-en':'White Gourd & Lemon Juice','price-M':'','price-L':45,'without-sugar':0},
+                {'name-cht':'黑糖檸檬','name-en':'Brown Sugar & Lemon Juice','price-M':'','price-L':50,'without-sugar':0},
+                {'name-cht':'金桔檸檬','name-en':'Calamondin & Lemon Juice','price-M':'','price-L':50,'without-sugar':0},
+                {'name-cht':'冰萃檸檬','name-en':'Lce Shavings of Lemon Green Juice','price-M':'','price-L':50,'without-sugar':0}
+              ]
+            },
+
+];
+  }
+})
+</script>

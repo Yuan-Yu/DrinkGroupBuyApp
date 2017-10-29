@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<head>
+  <?!= include('milkshop.css'); ?>
+</head>
+<body>
+  <div id="app">
+    <div class="nav">
+      <div class="title-container"> 
+        <div class="title">milk shop</div>
+        <div class="des">GreenLight Ranch Beverage Shop </div>
+      </div>
+    </div>
+    <div class="item-container">
+      <drinklist v-bind:subdata="subdata" v-for="subdata in drinksData"></drinklist>
+    </div>
+    <div class="seleted">
+      <seletedconponent></seletedconponent>
+    </div>
+  </div>
+</body>
+<template id="type-container">
+  <div class="type-container">
+    <div class="type-title">
+      <div class="type-title-txt">{{ subdata['type-cht']}}</div>
+    </div>
+    <div class="type-title-en">
+      <div class="type-title-txt-en">
+        <div class="type-title-txt-en">{{subdata['type-en']}}</div>
+        <div class="size">
+          <div class="M">M</div>
+          <div class="L">L</div>
+        </div>
+      </div>
+    </div>
+    <drink-container v-bind:drink="drink" v-for="drink in drinks"></drink-container>
+  </div>
+</template>
+<template id="drink-container">
+  <div class="drink-container" v-on:click="select" v-scroll-to="{ el: '#seletedCtn', offset: 200,duration: 1000  }">
+    <div class="name-c">
+      <div class="name-cht">{{drink['name-cht']}}</div>
+      <div class="name-en">{{drink['name-en']}}</div>
+    </div>
+    <div class="price-c">
+      <div class="price-M">{{drink['price-M']}}</div>
+      <div class="price-L">{{drink['price-L']}}</div>
+    </div>
+  </div>
+</template>
+<template id="seleted">
+  <div class="selected-container" id="seletedCtn">
+    <div class="order">Order</div>
+    <div class="selected-name" :class="{warning: isDrinkWarning}">{{seletedDrink['name-cht']}} {{seletedDrink['name-en']}}</div>
+    <div class="select-size" id="select-size" :class="{warning: isSizeWarnning}">
+      <label class="optionLabel">Size:</label>
+      <div class="M" v-if="seletedDrink['price-M']!=''">
+        <input type="radio" id="M" value="M" v-model="size">
+        <label for="M">
+          <div class="label" :class="{selectedsize: size == 'M'}">M</div><span>{{seletedDrink['price-M']}}</span>
+        </label>
+      </div>
+      <div class="L" v-if="seletedDrink['price-L']!=''">
+        <input type="radio" id="L" value="L" v-model="size">
+        <label for="L"> 
+          <div class="label" :class="{selectedsize: size == 'L'}">L</div><span>{{seletedDrink['price-L']}}</span>
+        </label>
+      </div>
+    </div>
+    <div class="select-sugar" id="select-sugar">
+      <label class="optionLabel">Sugar:</label>
+      <div class="sugar-block" v-for="sbid in 5" v-bind:title="sugarlist_en[sbid-1]" @click="sugar = sbid" :class="{selectedsugar: sbid <= sugar}"></div>
+    </div>
+    <div class="select-ice" id="select-ice" :class="{warning: isIceWarnning}">
+      <label class="optionLabel">Ice:</label>
+      <div class="ice-block" v-for="iceid in 7" :class="[iceLevels[iceid-1],{selectedIceBlock: ice == iceid-1}]" @click="ice = iceid-1" v-bind:title="iceLevels[iceid-1]"></div>
+    </div>
+    <div class="name-owner" id="name-owner" :class="{warning: isOwnerWarning}">
+      <label class="owner-name">Name:</label>
+      <input class="name-input" type="text" v-model="name">
+    </div>
+    <div class="button-container">
+      <button @click="submit">{{status}}</button>
+    </div>
+  </div>
+</template>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/vue-scrollto"></script>
+<?!= include('milkshop.js'); ?>
