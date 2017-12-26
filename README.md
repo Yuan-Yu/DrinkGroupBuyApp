@@ -11,6 +11,7 @@ The submited results are written in a [google sheet](https://docs.google.com/spr
 2. Copy the sheet id.
 ![sheet id](https://github.com/Yuan-Yu/DrinkGroupBuyApp/blob/master/image/3.PNG?raw=true)
 3. Click [this link](https://script.google.com/d/1A6sfd7lfVGNr5qR6cYPBwOyiBZ_Le6QIPVW5bBFoIfvShwmt1lr_0OCQ/edit?usp=sharing) and clone the script (File > Make copy)
+![clone app](https://github.com/Yuan-Yu/DrinkGroupBuyApp/blob/master/image/2.1.PNG?raw=true)
 4. Replace the "yourSheetID" with the real sheet id.
 ![yourSheetID](https://github.com/Yuan-Yu/DrinkGroupBuyApp/blob/master/image/4.PNG?raw=true)
 5. Deploy your app (Publish > Deploy as web app) and select anonymous in the user option.
