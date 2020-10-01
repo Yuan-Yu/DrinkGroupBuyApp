@@ -1,9 +1,9 @@
 # DrinkGroupBuyApp
-A web app based on google app script for group buying
+A web app based on Google App Script for group buying.
 
-## demo
+## Demo
 The website looks like [this](https://script.google.com/a/gapp.nthu.edu.tw/macros/s/AKfycbxeS8NrWVlUNGZ_6YAl6MkGZPsqRpUKHGTwz4Cm3RN_FerUGj0v/exec).  
-The submited results are written in a [google sheet](https://docs.google.com/spreadsheets/d/1z10VFmxmQzQUwleN1466KIaHmm_hatktcns5z2yFIyA/edit?usp=sharing).
+The submitted results are written in a [google sheet](https://docs.google.com/spreadsheets/d/1z10VFmxmQzQUwleN1466KIaHmm_hatktcns5z2yFIyA/edit?usp=sharing).
 
 ## How to setup DrinkGroupBuyApp
 1. Create a new sheet in your google drive and change the name of the sheet.
